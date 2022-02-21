@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<flow name="get-product-sapi-impl-private-flow" doc:id="492ab987-32c8-4357-95fe-2d1dd9e3fb67" >
+		<set-variable value="#[attributes.queryParams.product_id]" doc:name="vProduct_id" doc:id="e0c9bfdb-8453-4b2b-bce7-8b8183622376" variableName="vProduct_id"/>
+		<ee:transform doc:name="Transform Message" doc:id="e57e94f2-86a7-4ea7-a1c0-f72bb239effc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+	"query" : if (vars.vProduct_id == null) Mule::p('sql.query1') else Mule::p('sql.query2')
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:select doc:name="Select" doc:id="b52d47c1-9730-4fa4-b10c-96b7ad68d2aa" config-ref="Database_Config_snowflake">
+			<db:sql ><![CDATA[#[payload.query]]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id : vars.vProduct_id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="c503960e-bbaf-44e6-a15c-3bcbacb441e1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+  
+    "product_id": $.product_id,
+    "product_category_name": $.product_category_name,
+    "product_price": $.product_price,
+    "product_quantity": $.product_quantity
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

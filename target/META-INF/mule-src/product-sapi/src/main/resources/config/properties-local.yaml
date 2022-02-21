@@ -1,0 +1,19 @@
+# Listner configurations
+http:
+  host: "localhost"
+  port: "8081"
+  path: "/api/*"
+# DB configurations
+db:
+  host: "localhost"
+  port: "3306"
+  user: "root"
+  password: "root"
+  database: "xebia"
+  
+env:
+  key : "123@fldi!mdgfukt"
+  
+sql:
+  query1: "SELECT * FROM product"
+  query2: "SELECT * FROM product WHERE product_id =:id"

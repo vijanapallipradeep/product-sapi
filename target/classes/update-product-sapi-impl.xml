@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="update-product-sapi-impl-private-flow" doc:id="9d90b79f-db5d-4710-bef2-14f026c82c6a" >
+		<ee:transform doc:name="Transform Message" doc:id="4cc5d71b-2147-481b-b5fc-897e4a44708a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{	
+	"product_id" : attributes.uriParams.id,
+    "product_category_name": payload.product_category_name,
+    "product_price": payload.product_price,
+    "product_quantity": payload.product_quantity
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:update doc:name="Update" doc:id="7644fdf5-a0bf-4253-ac37-0fde3b2f88b9" config-ref="Database_Config_snowflake">
+			<db:sql ><![CDATA[UPDATE product
+SET product_category_name =:product_category_name, product_price =:product_price, product_quantity =:product_quantity
+WHERE product_id =:product_id;
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="a219a2ab-0e92-425f-939e-c8831c1dc135" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+   "Message" : "Updated Successfully.....!!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

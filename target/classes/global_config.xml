@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="product-sapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="product-sapi-config" api="product-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+		<configuration-properties doc:name="Configuration properties" doc:id="31b9ff0e-7870-4666-91f8-2582774bb299" file="config\properties-${mule.env}.yaml" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="f5bb97b5-28d4-4845-b6fb-c598f3e11e32" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}"/>
+	</db:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="4b81d39f-53fe-4836-a3b1-822407cde1ce" file="config\properties-${mule.env}.yaml" key="${env.key}" />
+	<db:config name="Database_Config_snowflake" doc:name="Database Config" doc:id="6a989c47-d02a-4474-aa57-9408bfdb9496" >
+		<db:generic-connection url="jdbc:snowflake://MU40179.southeast-asia.azure.snowflakecomputing.com/?user=vijanapallipradeep&amp;password=Muleforall123&amp;db=tasks&amp;schema=public" driverClassName="net.snowflake.client.jdbc.SnowflakeDriver" user="vijanapallipradeep" password="Muleforall123" />
+	</db:config>
+	
+</mule>

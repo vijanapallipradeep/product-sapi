@@ -1,0 +1,45 @@
+#%RAML 1.0
+title: product-sapi
+
+/fetch-product:
+  get:
+    queryParameters:
+      id:
+        required: false       
+        type: number
+        example: 001
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include /examples/response/fetch-product-response.json
+/create-product:
+  post:
+    body:
+      application/json:
+        example: !include /examples/request/create-product-request.json    
+    responses:
+      201:
+        body:
+          application/json:
+            example: !include /examples/response/create-product-response.json
+    
+/update-product/{id}:
+  put:
+    body:
+      application/json:
+        example: !include /examples/request/update-product-request.json
+          
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include /examples/response/update-product-response.json
+    
+/delete-product/{id}:
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include /examples/response/delete-product-response.json
